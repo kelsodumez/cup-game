@@ -13,32 +13,47 @@ public class CupManager : MonoBehaviour
     private GameObject _winningCup;
     static private  bool _winnerSelected = false;
     private GameEvent _currentGameEvent;
+    private GameObject[] _roundCups;
+
+    private bool _canGuess = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     void Start()
     {
+        GameEventManager.OnEventBegin += BeginRound;
+        GameEventManager.GuessingBegin += AllowGuess;
+        GameEventManager.OnEventEnd += ClearGame;
         _spawnAnchor.transform.position += new Vector3(-_distanceMultiplier,0, 0); // TODO, once round manager controls cup amount this will position correctly with more cup
         //Subscribe begin round to RoundManager begin Round event instaed
-        // BeginRound();
     }
 
-    // Update is called once per frame
-    void Update()
+
+    void OnDestroy()
     {
-        
+        GameEventManager.OnEventBegin -= BeginRound;
+        GameEventManager.GuessingBegin -= AllowGuess;
+        GameEventManager.OnEventEnd -= ClearGame;
+
     }
 
-    private void BeginRound(GameEvent inGameEvent)
+    public void BeginRound(GameEvent inGameEvent = null)
     {
+        _canGuess = false;
         _winnerSelected = false;
-        int cupAmount = 3;
-        GameObject[] roundCups = GenerateCupArray(cupAmount);
-        _winningCup = roundCups[UnityEngine.Random.Range(0, roundCups.Length -1)];
-        Debug.Log($"Winning Cup will be: {_winningCup.name}");
+        int stoneAmount = inGameEvent.stoneAmount;
+        int cupAmount = inGameEvent.cupAmount;
+        _roundCups = GenerateCupArray(cupAmount);
+        _winningCup = _roundCups[UnityEngine.Random.Range(0, _roundCups.Length -1)];
+        // Debug.Log($"Winning Cup will be: {_winningCup.name}");
     }
     private void EndRound()
     {
         GameEventManager.EndEvent(_currentGameEvent);
+    }
+
+    private void AllowGuess()
+    {
+        _canGuess = true;
     }
 
     static public bool retrieveGuess()
@@ -54,7 +69,7 @@ public class CupManager : MonoBehaviour
             GameObject newCup = Instantiate(_cupObject, _spawnAnchor);
             newCup.name = $"CUP: {count}";
             newCup.transform.position += new Vector3(count * _distanceMultiplier, 0 , 0);;
-            newCup.GetComponent<ClickableObject>().Initialize(() => CupSelected(newCup)); //cannot pass through array value to gameobject value in this call
+            newCup.GetComponent<ClickableObject>().Initialize(() => CupSelected(newCup));
 
             cupsArray[count] = newCup;
             
@@ -65,8 +80,19 @@ public class CupManager : MonoBehaviour
 
     public void CupSelected(GameObject selectedCup)
     {
-        Debug.Log($"Guessed: {selectedCup.name}");
-        _winnerSelected = selectedCup == _winningCup;
-        EndRound();
+        if (_canGuess)
+        {
+            Debug.Log($"Guessed: {selectedCup.name}");
+            _winnerSelected = selectedCup == _winningCup;
+            EndRound(); 
+        }
+    }
+
+    private void ClearGame(GameEvent inGameEvent)
+    {
+        foreach (GameObject cup in _roundCups)
+        {
+            Destroy(cup);
+        }
     }
 }

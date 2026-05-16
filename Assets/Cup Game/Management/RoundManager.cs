@@ -8,6 +8,7 @@ public class RoundManager : MonoBehaviour
 {
     [Header("Parameters")]
     private static RoundManager _Instance;
+    [SerializeField] private GameEvent[] _gameEvents;
 
     enum roundType
     {
@@ -66,8 +67,11 @@ public class RoundManager : MonoBehaviour
         switch (currentRound)
         {
             case roundType.game_event:
+
+                GameEventManager.StartGame(_gameEvents[UnityEngine.Random.Range(0, _gameEvents.Length-1)]);
                 break;
             case roundType.tutorial:
+                GameEventManager.StartGame(_gameEvents[0]);
                 break;
             case roundType.modifier_wheel_spin:
                 break;

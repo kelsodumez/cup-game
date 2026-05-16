@@ -15,3 +15,5 @@ MonoBehaviour:
   eventName: Standard
   cupAmount: 2
   stoneAmount: 1
+  scrambleDuration: 3
+  guessDuration: 3
