@@ -6,17 +6,20 @@ using UnityEngine;
 
 public class CupManager : MonoBehaviour
 {
+
     [SerializeField] private GameObject _cupObject;
     [SerializeField] private Transform _spawnAnchor;
     [SerializeField][Range(0, 10)] private float _distanceMultiplier = 2f;
     private GameObject _winningCup;
+    static private  bool _winnerSelected = false;
+    private GameEvent _currentGameEvent;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     void Start()
     {
         _spawnAnchor.transform.position += new Vector3(-_distanceMultiplier,0, 0); // TODO, once round manager controls cup amount this will position correctly with more cup
         //Subscribe begin round to RoundManager begin Round event instaed
-        BeginRound();
+        // BeginRound();
     }
 
     // Update is called once per frame
@@ -25,20 +28,23 @@ public class CupManager : MonoBehaviour
         
     }
 
-    private void BeginRound()
+    private void BeginRound(GameEvent inGameEvent)
     {
+        _winnerSelected = false;
         int cupAmount = 3;
         GameObject[] roundCups = GenerateCupArray(cupAmount);
         _winningCup = roundCups[UnityEngine.Random.Range(0, roundCups.Length -1)];
         Debug.Log($"Winning Cup will be: {_winningCup.name}");
     }
-    private void EndRound(bool guessCorrect)
+    private void EndRound()
     {
-        
-        // invoke next round event
+        GameEventManager.EndEvent(_currentGameEvent);
     }
 
-
+    static public bool retrieveGuess()
+    {
+        return _winnerSelected;
+    }
 
     private GameObject[] GenerateCupArray(int cupAmount)
     {
@@ -60,6 +66,7 @@ public class CupManager : MonoBehaviour
     public void CupSelected(GameObject selectedCup)
     {
         Debug.Log($"Guessed: {selectedCup.name}");
-        EndRound(selectedCup == _winningCup);
+        _winnerSelected = selectedCup == _winningCup;
+        EndRound();
     }
 }
