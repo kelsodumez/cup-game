@@ -603,10 +603,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ce407362d1474db4855c3e2a3999eb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityEngine.EventSystems.VirtualInputModule
-  UICamera: {fileID: 195658857}
+  UICamera: {fileID: 391568094}
   _renderTex: {fileID: 8400000, guid: 214053a8490af4cc9a6f338db475a8f2, type: 2}
   RawImageRectTrans: {fileID: 1717182328}
-  RenderToTextureCamera: {fileID: 391568094}
+  RenderToTextureCamera: {fileID: 195658857}
   _clickAction:
     m_Name: Click
     m_Type: 0
