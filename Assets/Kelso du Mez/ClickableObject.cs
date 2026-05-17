@@ -12,7 +12,7 @@ public class ClickableObject : MonoBehaviour
         onObjectClick = methodName;
     }
     
-    void OnMouseDown()
+    public void OnMouseDown()
     {
         onObjectClick();   
     }

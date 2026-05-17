@@ -18,7 +18,7 @@ public class CupManager : MonoBehaviour
     private bool _canGuess = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    void Start()
+    void Awake()
     {
         GameEventManager.OnEventBegin += BeginRound;
         GameEventManager.GuessingBegin += AllowGuess;
@@ -86,6 +86,11 @@ public class CupManager : MonoBehaviour
             _winnerSelected = selectedCup == _winningCup;
             EndRound(); 
         }
+        else
+        {
+            Debug.Log("Cup Selected Outside of Guess");
+        }
+
     }
 
     private void ClearGame(GameEvent inGameEvent)
