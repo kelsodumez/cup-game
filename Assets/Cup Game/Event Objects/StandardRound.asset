@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c32d6d8621384498db25344e2d3d1118, type: 3}
   m_Name: StandardRound
   m_EditorClassIdentifier: Assembly-CSharp::GameEvent
-  eventName: Standard
-  cupAmount: 2
-  stoneAmount: 1
-  scrambleDuration: 3
-  guessDuration: 3
+  eventName: Standard Event
+  displayDuration: 3
+  scrambleDuration: 5
+  noShuffles: 2
+  guessDuration: 20
+  cupAmount: 10
+  cupMoveSpeed: 20

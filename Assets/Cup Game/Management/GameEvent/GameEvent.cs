@@ -6,9 +6,12 @@ public class GameEvent : ScriptableObject
 {
     [Header("Game Parameters")]
     public string eventName;
-    [Range(0,5)] public int cupAmount = 3;
-    [Range(0,5)] public int stoneAmount = 1;
-    [Range(0,20f)] public float scrambleDuration = 20f;
-
+    [Range(0,20f)] public float displayDuration = 5f;
+    [Range(0,20f)] public float scrambleDuration = 5f;
+    public int noShuffles = 2;
     [Range(0,20f)] public float guessDuration = 20f;
+
+    [Range(0,10)] public int cupAmount = 3;
+    [Range(0,50f)] public float cupMoveSpeed = 20f;
+
 }

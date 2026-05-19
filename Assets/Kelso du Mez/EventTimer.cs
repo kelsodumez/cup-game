@@ -7,8 +7,9 @@ public class EventTimer : MonoBehaviour
     [SerializeField] private System.Action onTimerEnd;
     [SerializeField] private float currentTime;
     [SerializeField] private bool isActive = true;
+    private bool _doDestroySelf = true;
 
-    public void Initialize(string timerName, float time, System.Action methodName, bool doStartActive)
+    public void Initialize(string timerName, float time, System.Action methodName, bool doStartActive, bool doDestroySelf = true)
     {
         EventTimerManager.OnDestroyAllTimers += DestroySelf;
 
@@ -16,6 +17,7 @@ public class EventTimer : MonoBehaviour
         currentTime = time;
         onTimerEnd = methodName;
         isActive = doStartActive;
+        _doDestroySelf = doDestroySelf;
     }
 
     void Update()
@@ -33,8 +35,13 @@ public class EventTimer : MonoBehaviour
                 {
                     Debug.LogWarning($"{this.gameObject.name}: Unable to invoke method: {onTimerEnd.Method.Name}.");
                 }
+
                 isActive = false;
-                DestroySelf(); // TODO make this optional in function call
+
+                if (_doDestroySelf)
+                {
+                    DestroySelf(); // TODO make this optional in function call
+                }
             }
         }
     }

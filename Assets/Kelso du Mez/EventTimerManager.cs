@@ -18,18 +18,18 @@ public class EventTimerManager : MonoBehaviour
         _Instance = this;
     }
 
-    public static EventTimer CreateNewTimer(float time, System.Action methodName, bool doStartTimer = false, string timerName = "_UNNAMED TIMER")
+    public static EventTimer CreateNewTimer(float time, System.Action methodName, bool doStartTimer = false, string timerName = "_UNNAMED TIMER", bool doDestroySelf = true)
     {
-        return _Instance.CreateTimerInternal(time, methodName, doStartTimer, timerName);
+        return _Instance.CreateTimerInternal(time, methodName, doStartTimer, timerName, doDestroySelf);
     }
 
-    private EventTimer CreateTimerInternal(float time, System.Action methodName, bool doStartTimer = false, string timerName = "_UNNAMED TIMER")
+    private EventTimer CreateTimerInternal(float time, System.Action methodName, bool doStartTimer = false, string timerName = "_UNNAMED TIMER", bool doDestroySelf=true)
     {
         GameObject newTimerObject = new GameObject(timerName);
         newTimerObject.transform.SetParent(transform);
 
         EventTimer newTimerComponent = newTimerObject.AddComponent<EventTimer>();
-        newTimerComponent.Initialize(timerName, time, methodName, doStartTimer);
+        newTimerComponent.Initialize(timerName, time, methodName, doStartTimer, doDestroySelf);
 
         if (doStartTimer)
         {
@@ -37,5 +37,10 @@ public class EventTimerManager : MonoBehaviour
         }
 
         return newTimerComponent;
+    }
+
+    public static void ClearTimers()
+    {
+        OnDestroyAllTimers?.Invoke();
     }
 }

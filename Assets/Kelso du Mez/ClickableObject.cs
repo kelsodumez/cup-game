@@ -2,8 +2,9 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
-public class ClickableObject : MonoBehaviour
+public class ClickableObject : MonoBehaviour//, IPointerClickHandler
 {
     [SerializeField] private System.Action onObjectClick;
 
@@ -16,4 +17,10 @@ public class ClickableObject : MonoBehaviour
     {
         onObjectClick();   
     }
+
+// for no render tex bu
+    // public void OnPointerClick(PointerEventData eventData)
+    // {
+    //     onObjectClick();   
+    // }
 }

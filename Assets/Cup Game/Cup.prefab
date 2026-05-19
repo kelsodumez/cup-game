@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2253211418445019278}
   - component: {fileID: 8950909195492155587}
   - component: {fileID: 8213140865166992931}
+  - component: {fileID: -1708647633938317845}
   m_Layer: 0
   m_Name: Cup
   m_TagString: Untagged
@@ -50,7 +51,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754781127748769360}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -68,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 5bd72b7dd648744c7b1559a43d253672, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,3 +126,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd8e84f84a5a744788d54f70e8dba2d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+--- !u!114 &-1708647633938317845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754781127748769360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5d39a4bc121942259312c27ac4f7288, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  _lerpSpeed: 1

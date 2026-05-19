@@ -1,31 +1,36 @@
     using UnityEngine;
     using System;
-    static public class GameEventManager
+using Unity.VisualScripting;
+static public class GameEventManager
     {
         static public event Action<GameEvent> OnEventBegin;
+        static public event Action<GameEvent> OnScrambleBegin;
         static public event Action GuessingBegin;
-
-        static public event Action<GameEvent> OnEventEnd;
-        static public bool _roundWon;
-        
+        static public event Action<GameEvent, bool> OnEventEnd;        
         public static void StartGame(GameEvent inGameEvent)
         {
             OnEventBegin?.Invoke(inGameEvent);
-            Debug.Log("Game Event Started");
-            EventTimerManager.CreateNewTimer(inGameEvent.scrambleDuration, () => GuessPhase(inGameEvent), true, $"{inGameEvent.eventName} TIMER");
+            Debug.Log("Game Event: Initiatilised");
         }
 
-        static void GuessPhase(GameEvent inGameEvent)
+        public static void ScramblePhase(GameEvent inGameEvent)
         {
+            Debug.Log("Scramble!");
+            OnScrambleBegin?.Invoke(inGameEvent);
+            // EventTimerManager.CreateNewTimer(inGameEvent.scrambleDuration, () => GuessPhase(inGameEvent), true, $"{inGameEvent.eventName} TIMER", false);
+        }
+
+        public static void GuessPhase(GameEvent inGameEvent)
+        {
+            Debug.Log("Game Event: Guessing Phase");
             GuessingBegin?.Invoke();
-            EventTimerManager.CreateNewTimer(inGameEvent.guessDuration, () => EndEvent(inGameEvent), true, $"{inGameEvent.eventName} TIMER");
+            EventTimerManager.CreateNewTimer(inGameEvent.guessDuration, () => EndEvent(inGameEvent, false), true, $"{inGameEvent.eventName} TIMER");
         }
 
-
-        public static void EndEvent(GameEvent inGameEvent)
+        public static void EndEvent(GameEvent inGameEvent, bool roundWon)
         {
-            _roundWon = CupManager.retrieveGuess();
-
-            OnEventEnd?.Invoke(inGameEvent);
+            Debug.Log("Game Event: Wrapup");
+            EventTimerManager.ClearTimers();
+            OnEventEnd?.Invoke(inGameEvent, roundWon);
         }
     }
