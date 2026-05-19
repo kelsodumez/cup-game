@@ -102,7 +102,7 @@ public class CupManager : MonoBehaviour
         }
         else if (cupIndex > 0)
         {
-            yield return new WaitUntil(() => !_roundCups[cupIndex - 1].GetComponent<LerpableObject>().IsLerping();
+            yield return new WaitUntil(() => !_roundCups[cupIndex - 1].GetComponent<LerpableObject>().IsLerping());
         }
         //cup anim code
         GameObject currentCup = _roundCups[cupIndex];
