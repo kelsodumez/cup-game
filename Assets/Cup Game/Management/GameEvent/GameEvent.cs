@@ -12,6 +12,6 @@ public class GameEvent : ScriptableObject
     [Range(0,20f)] public float guessDuration = 20f;
 
     [Range(0,10)] public int cupAmount = 3;
-    [Range(0,50f)] public float cupMoveSpeed = 20f;
+    [Range(0,200f)] public float cupMoveSpeed = 20f;
 
 }

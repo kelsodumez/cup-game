@@ -18,6 +18,7 @@ public class CupManager : MonoBehaviour
     private List<GameObject> _roundCups;
     private bool _hasGuessed = false;
     private bool _canGuess = false;
+    private bool _shuffleInProgress = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     void Awake()
@@ -64,7 +65,7 @@ public class CupManager : MonoBehaviour
 
     private void GenerateCupList(int cupAmount)
     {
-        float deltaRadianPlacement = 360f/cupAmount;
+        float deltaDegreePlacement = 360f/cupAmount;
         List<GameObject> cupsList = new List<GameObject>();
         Vector3 sourceVector = new Vector3(_spawnAnchor.position.x * _distanceMultiplier, _spawnAnchor.position.y, _spawnAnchor.position.z);
         for (int count = 0; count < cupAmount; count++)
@@ -73,7 +74,7 @@ public class CupManager : MonoBehaviour
             newCup.name = $"CUP: {count}";
 
             // place cups evenly across a N-sided Shape where n = {cupAmount}
-            Quaternion newCupRotation = Quaternion.AngleAxis(deltaRadianPlacement * count, Vector3.up);
+            Quaternion newCupRotation = Quaternion.AngleAxis(deltaDegreePlacement * count, Vector3.up);
             Vector3 newCupPos = newCupRotation * sourceVector;
             newCup.transform.position = newCupPos;
             // newCup.transform.position += new Vector3(count * _distanceMultiplier, 0 , 0);;
@@ -83,10 +84,10 @@ public class CupManager : MonoBehaviour
             cupsList.Add(newCup);
         }
         _roundCups = cupsList;
-        PlaceCups();
+        DealCups();
     }
 
-    private void PlaceCups()
+    private void DealCups()
     {
         Debug.Log("Placing Cups");
         StartCoroutine(PlaceCup(0));
@@ -94,9 +95,9 @@ public class CupManager : MonoBehaviour
 
     System.Collections.IEnumerator PlaceCup(int cupIndex)
     {
-        if (cupIndex > _roundCups.Count)
+        if (cupIndex >= _roundCups.Count)
         {
-            // won't display the winning cup until
+            // won't display the winning cup until all cups dealt
             DisplayWinningCup();
             yield break;
         }
@@ -112,14 +113,12 @@ public class CupManager : MonoBehaviour
         currentCup.GetComponent<LerpableObject>().BeginLerpingToPoint(prevCupPosition, _currentGameEvent.cupMoveSpeed);
         
         StartCoroutine(PlaceCup(cupIndex + 1));
-
     }
 
     private void DisplayWinningCup()
     {
         _winningCup = _roundCups[UnityEngine.Random.Range(0, _roundCups.Count)];
-        DoShuffle();
-        _winningCup.transform.GetComponent<Material>().color = Color.red; // temp
+        _winningCup.transform.GetComponent<MeshRenderer>().material.color = Color.red; // temp
         Debug.Log("Displaying Winning Cup");
         EventTimerManager.CreateNewTimer(_currentGameEvent.displayDuration, () => GameEventManager.ScramblePhase(_currentGameEvent), true, $"TIMER");
     }
@@ -134,14 +133,13 @@ public class CupManager : MonoBehaviour
 
     System.Collections.IEnumerator ShuffleOnceLerped(int currentShuffle, int maxShuffles)
     {
-        Debug.Log(currentShuffle);
+        yield return new WaitUntil(() => CupsDoneShuffling());
+
         if (currentShuffle > maxShuffles)
         {
-            Debug.Log("Reach");
             GameEventManager.GuessPhase(_currentGameEvent);
             yield break;
         }
-        yield return new WaitUntil(() => CupsDoneLerping());
         DoShuffle();
         StartCoroutine(ShuffleOnceLerped(currentShuffle + 1, maxShuffles));
     }
@@ -160,22 +158,43 @@ public class CupManager : MonoBehaviour
             cupPairs.Add((currentCup, randCup));
             availableCups.Remove(randCup);
         }
-
-        foreach ((GameObject, GameObject) cupPair in cupPairs)
-        {
-            Vector3 cupOnePos = cupPair.Item1.transform.position;
-            Vector3 cupTwoPos = cupPair.Item2.transform.position;
-
-            cupPair.Item1.GetComponent<LerpableObject>().BeginLerpingToPoint(cupTwoPos, _currentGameEvent.cupMoveSpeed);
-            cupPair.Item2.GetComponent<LerpableObject>().BeginLerpingToPoint(cupOnePos, _currentGameEvent.cupMoveSpeed);
-        }
+        _shuffleInProgress = true;
+        StartCoroutine(LerpPair(0, cupPairs));
     }
 
-    private bool CupsDoneLerping()
+    System.Collections.IEnumerator LerpPair(int pairIndex, List<(GameObject, GameObject)> cupPairs)
     {
+        if (pairIndex >= cupPairs.Count)
+        {
+            // all cups shuffled
+            _shuffleInProgress = false;
+            yield break;
+        }
+        else if (pairIndex > 0)
+        {
+            // bool prevPairLerping = cupPairs[pairIndex - 1].Item1.GetComponent<LerpableObject>().IsLerping(); //&& cupPairs[pairIndex - 1].Item2.GetComponent<LerpableObject>().IsLerping();
+            yield return new WaitUntil(() => !cupPairs[pairIndex - 1].Item1.GetComponent<LerpableObject>().IsLerping());
+        }
+        Debug.Log(pairIndex);
+        //cup anim code
+        Vector3 cupOnePos = cupPairs[pairIndex].Item1.transform.position;
+        Vector3 cupTwoPos = cupPairs[pairIndex].Item2.transform.position;
+
+        cupPairs[pairIndex].Item1.GetComponent<LerpableObject>().BeginLerpingToPoint(cupTwoPos, _currentGameEvent.cupMoveSpeed);
+        cupPairs[pairIndex].Item2.GetComponent<LerpableObject>().BeginLerpingToPoint(cupOnePos, _currentGameEvent.cupMoveSpeed);
+        StartCoroutine(LerpPair(pairIndex + 1, cupPairs));
+    }
+
+
+    private bool CupsDoneShuffling()
+    {
+        if (_shuffleInProgress)
+        {
+            return false;
+        }
         foreach (GameObject cup in _roundCups)
         {
-            // if any cup is currently lerping, return false
+            // if any cup is currently lerping return false
             if (cup.GetComponent<LerpableObject>().IsLerping())
             {
                 return false;

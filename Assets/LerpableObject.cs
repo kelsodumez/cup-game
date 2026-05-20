@@ -6,7 +6,7 @@ public class LerpableObject : MonoBehaviour
     private Vector3 _startPos;
     private float _startTime;
     private float _lerpDist;
-    private bool _doLerp = false;
+    [SerializeField] private bool _doLerp = false;
 
     [SerializeField] float _lerpSpeed = 5.0f;
 

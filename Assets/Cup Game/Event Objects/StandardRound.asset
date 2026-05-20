@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: StandardRound
   m_EditorClassIdentifier: Assembly-CSharp::GameEvent
   eventName: Standard Event
-  displayDuration: 3
+  displayDuration: 1
   scrambleDuration: 5
-  noShuffles: 2
+  noShuffles: 5
   guessDuration: 20
-  cupAmount: 10
-  cupMoveSpeed: 20
+  cupAmount: 7
+  cupMoveSpeed: 100
