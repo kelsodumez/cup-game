@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8213140865166992931}
   - component: {fileID: -1708647633938317845}
   - component: {fileID: 8907227168069298811}
-  - component: {fileID: 2803521729644189396}
+  - component: {fileID: 8867578886741793097}
   m_Layer: 0
   m_Name: Cup
   m_TagString: Untagged
@@ -96,12 +96,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2845631cfe3404b4091a345112e3acc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  onHoverEvent:
-    m_PersistentCalls:
+  _onHoverEvents:
+  - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2803521729644189396}
+      - m_Target: {fileID: 8867578886741793097}
         m_TargetAssemblyTypeName: AdjustToonOutline, Assembly-CSharp
-        m_MethodName: SetOutlineToSaved
+        m_MethodName: SetOutlineColour
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -111,7 +111,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2803521729644189396
+      - m_Target: {fileID: 8867578886741793097}
+        m_TargetAssemblyTypeName: AdjustToonOutline, Assembly-CSharp
+        m_MethodName: ToggleOutlineWobble
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+--- !u!114 &8867578886741793097
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,8 +134,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5d9b4b4f253e474cb914c9893487c30, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::AdjustToonOutline
+  _renderer: {fileID: 8051642043664651934}
   _newOutline: {r: 1, g: 1, b: 1, a: 1}
+  _wobbleAmplitude: 12
+  _wobbleFrequency: 5
+  _minimumOutlineWidth: 35
 --- !u!1001 &8682016932802185754
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -205,6 +221,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e4ce0f3d25d684c32a36dd37f5c4f669, type: 3}
+--- !u!23 &8051642043664651934 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: e4ce0f3d25d684c32a36dd37f5c4f669, type: 3}
+  m_PrefabInstance: {fileID: 8682016932802185754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9220558506105810417 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e4ce0f3d25d684c32a36dd37f5c4f669, type: 3}

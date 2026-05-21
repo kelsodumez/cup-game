@@ -1,5 +1,5 @@
-    using UnityEngine;
-    using System;
+using UnityEngine;
+using System;
 using Unity.VisualScripting;
 static public class GameEventManager
     {
@@ -22,6 +22,7 @@ static public class GameEventManager
 
         public static void GuessPhase(GameEvent inGameEvent)
         {
+            ArmController.ResetHand(ArmController.hand_target.both);
             Debug.Log("Game Event: Guessing Phase");
             GuessingBegin?.Invoke();
             EventTimerManager.CreateNewTimer(inGameEvent.guessDuration, () => EndEvent(inGameEvent, false), true, $"{inGameEvent.eventName} TIMER");

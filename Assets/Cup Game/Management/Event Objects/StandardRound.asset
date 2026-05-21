@@ -17,5 +17,5 @@ MonoBehaviour:
   scrambleDuration: 5
   noShuffles: 5
   guessDuration: 20
-  cupAmount: 7
-  cupMoveSpeed: 100
+  cupAmount: 2
+  cupMoveSpeed: 20
