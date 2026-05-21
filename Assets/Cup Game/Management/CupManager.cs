@@ -109,7 +109,7 @@ public class CupManager : MonoBehaviour
         GameObject currentCup = _roundCups[cupIndex];
         Vector3 prevCupPosition = currentCup.transform.position;
         currentCup.transform.position = _dealerPocket.position;
-        currentCup.GetComponent<MeshRenderer>().enabled = true;
+        currentCup.GetComponentInChildren<MeshRenderer>().enabled = true;
         currentCup.GetComponent<LerpableObject>().BeginLerpingToPoint(prevCupPosition, _currentGameEvent.cupMoveSpeed);
         
         StartCoroutine(PlaceCup(cupIndex + 1));
@@ -118,7 +118,7 @@ public class CupManager : MonoBehaviour
     private void DisplayWinningCup()
     {
         _winningCup = _roundCups[UnityEngine.Random.Range(0, _roundCups.Count)];
-        _winningCup.transform.GetComponent<MeshRenderer>().material.color = Color.red; // temp
+        _winningCup.transform.GetComponentInChildren<MeshRenderer>().material.color = Color.red; // temp
         Debug.Log("Displaying Winning Cup");
         EventTimerManager.CreateNewTimer(_currentGameEvent.displayDuration, () => GameEventManager.ScramblePhase(_currentGameEvent), true, $"TIMER");
     }
