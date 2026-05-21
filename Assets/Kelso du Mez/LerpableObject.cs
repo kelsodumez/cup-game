@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class LerpableObject : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class LerpableObject : MonoBehaviour
     private float _lerpSpeed;
 
     private bool _doResetLerp = true;
+
+    public event Action OnLerpEnd;
+
 
     void Awake()
     {
@@ -68,7 +72,7 @@ public class LerpableObject : MonoBehaviour
 
         if ((transform.position - lerpTarget).sqrMagnitude <= 0.0002f && _doResetLerp)
         {
-            ResetLerper();
+            EndLerp();
         }
     }
 
@@ -81,6 +85,7 @@ public class LerpableObject : MonoBehaviour
     public void EndLerp()
     {
         _doResetLerp = false;
+        OnLerpEnd?.Invoke();
         ResetLerper();
     }
 

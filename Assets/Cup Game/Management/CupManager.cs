@@ -97,12 +97,12 @@ public class CupManager : MonoBehaviour
     private void DealCups()
     {
         Debug.Log("Placing Cups");
-        StartCoroutine(PlaceCup(0));
+        StartCoroutine(PlaceCup(0, ArmController.hand_target.left));
     }
 
-    System.Collections.IEnumerator PlaceCup(int cupIndex)
+    System.Collections.IEnumerator PlaceCup(int cupIndex, ArmController.hand_target prevHand)
     {
-        yield return new WaitUntil(() => ArmController.Instance.HandsStationary());
+        yield return new WaitUntil(() => ArmController.ArmsStationary());
 
         if (cupIndex >= _roundCups.Count)
         {
@@ -116,30 +116,30 @@ public class CupManager : MonoBehaviour
         }
         //cup anim code
         GameObject currentCup = _roundCups[cupIndex];
+
         Vector3 prevCupPosition = currentCup.transform.position;
         currentCup.transform.position = _dealerPocket.position;
         currentCup.GetComponentInChildren<MeshRenderer>().enabled = true;
 
         currentCup.GetComponent<LerpableObject>().BeginLerpingToVector(prevCupPosition, _currentGameEvent.cupMoveSpeed);
-        
-        if (cupIndex % 2 == 0)
+        ArmController.hand_target currentHand = ArmController.hand_target.left;
+        switch (prevHand)
         {
-            // Debug.Log($"Right following {currentCup.name}");
-
-            ArmController.SetTarget(ArmController.hand_target.left, currentCup.transform);
+            case ArmController.hand_target.left:
+                currentHand = ArmController.hand_target.right;
+                ArmController.SetTarget(currentHand, currentCup.transform);
+                break;
+            case ArmController.hand_target.right:
+                currentHand = ArmController.hand_target.left;
+                ArmController.SetTarget(currentHand, currentCup.transform);
+                break;
         }
-        else
-        {
-            // Debug.Log($"Left following {currentCup.name}");
-            ArmController.SetTarget(ArmController.hand_target.right, currentCup.transform);
-        }
-
-        StartCoroutine(PlaceCup(cupIndex + 1));
+        StartCoroutine(PlaceCup(cupIndex + 1, currentHand));
     }
 
     private void DisplayWinningCup()
     {
-        ArmController.ResetHand(ArmController.hand_target.both);
+        // ArmController.ResetHand(ArmController.hand_target.both);
 
         _winningCup = _roundCups[UnityEngine.Random.Range(0, _roundCups.Count)];
         // ArmController.SetTarget(false, _winningCup.transform);

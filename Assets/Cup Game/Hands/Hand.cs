@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class Hand : MonoBehaviour
 {
@@ -20,12 +21,15 @@ public class Hand : MonoBehaviour
         ArmController.onHandTargetCleared += ResetTarget;
 
         ResetTarget(_hand);
+
+        _handLerper.OnLerpEnd += HandStationary;
     }
 
     void OnDestroy()
     {
         ArmController.onHandTargetSet -= FollowTarget;
         ArmController.onHandTargetCleared -= ResetTarget;
+        _handLerper.OnLerpEnd -= HandStationary;
 
     }
 
@@ -43,7 +47,8 @@ public class Hand : MonoBehaviour
     private void FollowTarget(ArmController.hand_target inHand, Transform target)
     {
         if (inHand == ArmController.hand_target.both || _hand == inHand)
-        {            
+        {   
+            ArmController.ToggleArmsStationary(false);
             // Debug.Log($"{transform.name} following {target.name}");
             _target = target;
             _handLerper.EndLerp();
@@ -64,5 +69,10 @@ public class Hand : MonoBehaviour
     public bool IsLerping()
     {
         return _handLerper.IsLerping();
+    }
+
+    private void HandStationary()
+    {
+        ArmController.ToggleArmsStationary(true);
     }
 }

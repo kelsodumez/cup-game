@@ -6,19 +6,6 @@ using System.Linq;
 
 public class ArmController : MonoBehaviour
 {
-    private static ArmController _instance;
-
-    public static ArmController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new ArmController();
-            }
-            return _instance;
-        }
-    }
 
     public enum hand_target
     {
@@ -28,26 +15,19 @@ public class ArmController : MonoBehaviour
     }
     static public event Action<hand_target, Transform> onHandTargetSet;
     static public event Action<hand_target> onHandTargetCleared;
+    private static bool _armsStationary = true;
 
-    private Hand[] _hands;
+    [SerializeField] private List<Hand> _hands;
 
-
-    private void Awake()
+    public static void ToggleArmsStationary(bool inState)
     {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
-
-        _hands = GetComponents<Hand>();
-        Debug.Log($"{_hands.Count()} hands in scene");
+        _armsStationary = inState;
     }
 
+    public static bool ArmsStationary()
+    {
+        return _armsStationary;
+    }
 
     public static void SetTarget(hand_target inHand, Transform inTarget)
     {

@@ -258,7 +258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hand
   _hand: 1
   _root: {fileID: 2096723635}
-  _handLerpSpeed: 40
+  _handLerpSpeed: 100
 --- !u!114 &169841805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1561,6 +1561,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1235576335}
+  - component: {fileID: 1235576336}
   m_Layer: 0
   m_Name: arms
   m_TagString: Untagged
@@ -1589,6 +1590,19 @@ Transform:
   - {fileID: 169841803}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1235576336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235576334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38b489104f6de4a8abd9cbba79d061e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArmController
+  _hands: []
 --- !u!1 &1264995947
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,7 +1651,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hand
   _hand: 0
   _root: {fileID: 1381617373}
-  _handLerpSpeed: 40
+  _handLerpSpeed: 100
 --- !u!114 &1264995950
 MonoBehaviour:
   m_ObjectHideFlags: 0

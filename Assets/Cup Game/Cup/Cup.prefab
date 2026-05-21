@@ -82,8 +82,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5d39a4bc121942259312c27ac4f7288, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  _doLerp: 0
-  _lerpSpeed: 1
+  _doVectorLerp: 0
+  _doTransformLerp: 0
 --- !u!114 &8907227168069298811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,7 +206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: e4ce0f3d25d684c32a36dd37f5c4f669, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: e4ce0f3d25d684c32a36dd37f5c4f669, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
