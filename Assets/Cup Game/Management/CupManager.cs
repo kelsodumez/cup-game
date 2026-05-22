@@ -87,6 +87,8 @@ public class CupManager : MonoBehaviour
             // Add ClickableObject Class to newCup  
             newCup.GetComponent<ClickableObject>().Initialize(() => CupSelected(newCup));
             newCup.GetComponent<HoverableObject>().AllowHovering(false);
+            newCup.GetComponentInChildren<TrailRenderer>().enabled = false;
+
 
             cupsList.Add(newCup);
         }
@@ -97,7 +99,7 @@ public class CupManager : MonoBehaviour
     private void DealCups()
     {
         Debug.Log("Placing Cups");
-        StartCoroutine(PlaceCup(0, ArmController.hand_target.left));
+        StartCoroutine(PlaceCup(0, ArmController.hand_target.right));
     }
 
     System.Collections.IEnumerator PlaceCup(int cupIndex, ArmController.hand_target prevHand)
@@ -121,7 +123,7 @@ public class CupManager : MonoBehaviour
         currentCup.transform.position = _dealerPocket.position;
         currentCup.GetComponentInChildren<MeshRenderer>().enabled = true;
 
-        currentCup.GetComponent<LerpableObject>().BeginLerpingToVector(prevCupPosition, _currentGameEvent.cupMoveSpeed);
+        currentCup.GetComponent<LerpableObject>().BeginLerpingToVector(prevCupPosition, _currentGameEvent.dealSpeed);
         ArmController.hand_target currentHand = ArmController.hand_target.left;
         switch (prevHand)
         {
@@ -145,6 +147,12 @@ public class CupManager : MonoBehaviour
         // ArmController.SetTarget(false, _winningCup.transform);
         _winningCup.transform.GetComponentInChildren<MeshRenderer>().material.color = Color.red; // temp
         Debug.Log("Displaying Winning Cup");
+
+        foreach (GameObject cup in _roundCups)
+        {
+            cup.GetComponentInChildren<TrailRenderer>().enabled = true;
+        }
+
         EventTimerManager.CreateNewTimer(_currentGameEvent.displayDuration, () => GameEventManager.ScramblePhase(_currentGameEvent), true, $"TIMER");
     }
 
@@ -182,10 +190,10 @@ public class CupManager : MonoBehaviour
             availableCups.Remove(randCup);
         }
         _shuffleInProgress = true;
-        StartCoroutine(LerpPair(0, cupPairs));
+        StartCoroutine(LerpPair(0, cupPairs, 0.4f));
     }
 
-    System.Collections.IEnumerator LerpPair(int pairIndex, List<(GameObject, GameObject)> cupPairs)
+    System.Collections.IEnumerator LerpPair(int pairIndex, List<(GameObject, GameObject)> cupPairs, float waitTime)
     {
         if (pairIndex >= cupPairs.Count)
         {
@@ -195,6 +203,8 @@ public class CupManager : MonoBehaviour
         }
         else if (pairIndex > 0)
         {
+            yield return new WaitUntil(() => ArmController.ArmsStationary());
+
             // bool prevPairLerping = cupPairs[pairIndex - 1].Item1.GetComponent<LerpableObject>().IsLerping(); //&& cupPairs[pairIndex - 1].Item2.GetComponent<LerpableObject>().IsLerping();
             yield return new WaitUntil(() => !cupPairs[pairIndex - 1].Item1.GetComponent<LerpableObject>().IsLerping());
         }
@@ -205,10 +215,11 @@ public class CupManager : MonoBehaviour
         ArmController.SetTarget(ArmController.hand_target.left, cupOne.transform);
         ArmController.SetTarget(ArmController.hand_target.right, cupTwo.transform);
 
+        yield return new WaitForSeconds(waitTime);
 
         cupOne.GetComponent<LerpableObject>().BeginLerpingToVector(cupTwo.transform.position, _currentGameEvent.cupMoveSpeed);
         cupTwo.GetComponent<LerpableObject>().BeginLerpingToVector(cupOne.transform.position, _currentGameEvent.cupMoveSpeed);
-        StartCoroutine(LerpPair(pairIndex + 1, cupPairs));
+        StartCoroutine(LerpPair(pairIndex + 1, cupPairs, waitTime));
     }
 
 

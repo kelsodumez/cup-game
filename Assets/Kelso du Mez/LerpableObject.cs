@@ -12,12 +12,16 @@ public class LerpableObject : MonoBehaviour
     [SerializeField] private bool _doVectorLerp = false;
     [SerializeField] private bool _doTransformLerp = false;
 
+
+
     private float _lerpSpeed;
 
     private bool _doResetLerp = true;
 
     public event Action OnLerpEnd;
 
+    public event Action OnHitTarget;
+    private bool _onHitTargetInvoked = false;
 
     void Awake()
     {
@@ -37,6 +41,7 @@ public class LerpableObject : MonoBehaviour
 
     public void BeginLerpingToVector(Vector3 target, float lerpSpeed, bool endLerp = true)
     {
+        _onHitTargetInvoked = false;
         _doTransformLerp = false;
         _doVectorLerp = true;
         _startTime = Time.time;
@@ -49,12 +54,15 @@ public class LerpableObject : MonoBehaviour
 
     public void BeginLerpingToTransform(Transform target, float lerpSpeed, bool endLerp = true)
     {
+        _onHitTargetInvoked = false;
         _doVectorLerp = false;
         _doTransformLerp = true;
         _startTime = Time.time;
         _startPos = transform.position;
         _transformLerpTarget = target;
         _lerpSpeed = lerpSpeed;
+
+        _doResetLerp = endLerp;
     }
 
     private void DoLerp(Vector3 lerpTarget)
@@ -70,9 +78,18 @@ public class LerpableObject : MonoBehaviour
         // Set our position as a fraction of the distance between the markers.
             transform.position = Vector3.Lerp(_startPos, lerpTarget, fractionOfJourney);
 
-        if ((transform.position - lerpTarget).sqrMagnitude <= 0.0002f && _doResetLerp)
+        if ((transform.position - lerpTarget).sqrMagnitude <= 0.0002f)
         {
-            EndLerp();
+            if (!_onHitTargetInvoked)
+            {
+                _onHitTargetInvoked = true;
+                OnHitTarget?.Invoke();
+            }
+
+            if (_doResetLerp)
+            {
+                EndLerp();
+            }
         }
     }
 

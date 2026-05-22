@@ -15,7 +15,8 @@ MonoBehaviour:
   eventName: Standard Event
   displayDuration: 1
   scrambleDuration: 5
-  noShuffles: 5
+  noShuffles: 500
   guessDuration: 20
-  cupAmount: 3
-  cupMoveSpeed: 20
+  cupAmount: 10
+  dealSpeed: 120
+  cupMoveSpeed: 65

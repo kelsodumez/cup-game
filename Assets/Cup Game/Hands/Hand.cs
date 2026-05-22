@@ -1,9 +1,18 @@
 using UnityEngine;
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class Hand : MonoBehaviour
 {
+    public ArmController.hand_target HandType
+    {
+        get => _hand;
+    }
+
     [SerializeField] private ArmController.hand_target _hand;
+    [SerializeField] private SpriteRenderer _handOpenSprite;
+    [SerializeField] private SpriteRenderer _handClosedSprite;
+
     private Transform _target;
     private float _verticalOffset;
     [SerializeField] private Transform _root;
@@ -19,10 +28,13 @@ public class Hand : MonoBehaviour
 
         ArmController.onHandTargetSet += FollowTarget;
         ArmController.onHandTargetCleared += ResetTarget;
-
+        _handLerper.OnHitTarget += CloseHandSprite;
+        _handLerper.OnLerpEnd += OpenHandSprite;
         ResetTarget(_hand);
 
         _handLerper.OnLerpEnd += HandStationary;
+        _handLerper.OnHitTarget += ReachedTarget;
+;
     }
 
     void OnDestroy()
@@ -30,6 +42,9 @@ public class Hand : MonoBehaviour
         ArmController.onHandTargetSet -= FollowTarget;
         ArmController.onHandTargetCleared -= ResetTarget;
         _handLerper.OnLerpEnd -= HandStationary;
+        _handLerper.OnHitTarget -= CloseHandSprite;
+        _handLerper.OnLerpEnd -= OpenHandSprite;
+        _handLerper.OnHitTarget -= ReachedTarget;
 
     }
 
@@ -48,8 +63,8 @@ public class Hand : MonoBehaviour
     {
         if (inHand == ArmController.hand_target.both || _hand == inHand)
         {   
-            ArmController.ToggleArmsStationary(false);
             // Debug.Log($"{transform.name} following {target.name}");
+            ArmController.ToggleArmsStationary(false);
             _target = target;
             _handLerper.EndLerp();
             _handLerper.BeginLerpingToTransform(_target, _handLerpSpeed, false);
@@ -66,6 +81,23 @@ public class Hand : MonoBehaviour
         }
     }
 
+    private void ReachedTarget()
+    {
+        ArmController.ToggleArmsAtTargets(true);
+    }
+
+    private void CloseHandSprite()
+    {
+        Debug.Log("Closing Hand!");
+        _handOpenSprite.enabled = false;
+        _handClosedSprite.enabled = true;
+    }
+    private void OpenHandSprite()
+    {
+        _handOpenSprite.enabled = true;
+        _handClosedSprite.enabled = false;
+    }
+
     public bool IsLerping()
     {
         return _handLerper.IsLerping();
@@ -75,4 +107,6 @@ public class Hand : MonoBehaviour
     {
         ArmController.ToggleArmsStationary(true);
     }
+
+    
 }
